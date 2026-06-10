@@ -19,9 +19,15 @@ export default function Home() {
         style={styles.banner}
       >
         <View style={styles.overlay}>
-          <Text style={styles.title}>
-            S.E.N.T.I.N.E.L.A
-          </Text>
+<Image
+  source={require("../src/assets/Logo-SentinelaSemFundo.png")}
+  style={{
+    width: 250,
+    height: 120,
+    resizeMode: "contain",
+    marginBottom: 20,
+  }}
+/>
 
           <TouchableOpacity
             style={styles.button}
@@ -37,17 +43,12 @@ export default function Home() {
       </ImageBackground>
 
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>
+      <TouchableOpacity style={styles.button} onPress={() => router.push("/sobre")}
+      >
+        <Text style={styles.buttonText}>
           Sobre o Projeto
         </Text>
-
-        <Text style={styles.description}>
-          Sistema Inteligente para
-          Notificação e Monitoramento
-          de Incêndios utilizando dados
-          de satélites, IA, IoT e
-          notificações em tempo real.
-        </Text>
+      </TouchableOpacity>
       </View>
 
       <View style={styles.section}>

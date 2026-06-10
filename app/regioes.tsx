@@ -5,14 +5,23 @@ import {
   FlatList,
   TouchableOpacity,
   Alert,
+  RefreshControl,
 } from "react-native";
+
 import { router } from "expo-router";
+
 import { api } from "../src/services/api";
 import { Regiao } from "../src/types/Regiao";
+
 import { styles } from "../src/styles/regioes.styles";
 
 export default function Regioes() {
-  const [regioes, setRegioes] = useState<Regiao[]>([]);
+  const [regioes, setRegioes] = useState<
+    Regiao[]
+  >([]);
+
+  const [refreshing, setRefreshing] =
+    useState(false);
 
   useEffect(() => {
     carregarRegioes();
@@ -20,27 +29,58 @@ export default function Regioes() {
 
   async function carregarRegioes() {
     try {
-      const response = await api.get("/api/regioes");
+      const response = await api.get(
+        "/api/regioes"
+      );
+
       setRegioes(response.data);
-    } catch {
+    } catch (error) {
+      console.log(error);
+
       Alert.alert(
         "Erro",
-        "Falha ao carregar regiões"
+        "Falha ao carregar regiões."
       );
     }
   }
 
-  async function excluir(id: number) {
-    try {
-      await api.delete(`/api/regioes/${id}`);
+  async function atualizar() {
+    setRefreshing(true);
 
-      carregarRegioes();
-    } catch {
-      Alert.alert(
-        "Erro",
-        "Não foi possível excluir"
-      );
-    }
+    await carregarRegioes();
+
+    setRefreshing(false);
+  }
+
+  async function excluir(id: number) {
+    Alert.alert(
+      "Excluir Região",
+      "Deseja realmente excluir esta região?",
+      [
+        {
+          text: "Cancelar",
+          style: "cancel",
+        },
+        {
+          text: "Excluir",
+          style: "destructive",
+          onPress: async () => {
+            try {
+              await api.delete(
+                `/api/regioes/${id}`
+              );
+
+              carregarRegioes();
+            } catch {
+              Alert.alert(
+                "Erro",
+                "Não foi possível excluir."
+              );
+            }
+          },
+        },
+      ]
+    );
   }
 
   return (
@@ -52,7 +92,7 @@ export default function Regioes() {
         }
       >
         <Text style={styles.addButtonText}>
-          Nova Região
+          ➕ Nova Região
         </Text>
       </TouchableOpacity>
 
@@ -61,6 +101,12 @@ export default function Regioes() {
         keyExtractor={(item) =>
           item.id.toString()
         }
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={atualizar}
+          />
+        }
         renderItem={({ item }) => (
           <View style={styles.card}>
             <Text style={styles.nome}>
@@ -68,7 +114,13 @@ export default function Regioes() {
             </Text>
 
             <Text>
-              {item.nmEstado} - {item.nmPais}
+              {item.nmEstado} -{" "}
+              {item.nmPais}
+            </Text>
+
+            <Text>
+              📍 {item.reLatitude},{" "}
+              {item.reLongitude}
             </Text>
 
             <TouchableOpacity

@@ -35,7 +35,9 @@ export default StyleSheet.create({
   buttonText: {
     color: "#FFF",
     fontWeight: "bold",
+    textAlign: "center",
     fontSize: 16,
+
   },
 
   section: {

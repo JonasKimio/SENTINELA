@@ -3,11 +3,13 @@ import {
   View,
   TouchableOpacity,
   Text,
-  Alert,
   ActivityIndicator,
+  Alert,
 } from "react-native";
+
 import MapView, { Marker } from "react-native-maps";
 import { router } from "expo-router";
+
 import { api } from "../src/services/api";
 import { mapaStyles as styles } from "../src/styles/mapa.styles";
 
@@ -22,11 +24,29 @@ type AlertaMapa = {
 };
 
 export default function Mapa() {
-  const [alertas, setAlertas] = useState<AlertaMapa[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [alertas, setAlertas] = useState<
+    AlertaMapa[]
+  >([]);
+
+  const [loading, setLoading] =
+    useState(false);
+
+  const [region, setRegion] = useState({
+    latitude: -22.9,
+    longitude: -47.06,
+    latitudeDelta: 5,
+    longitudeDelta: 5,
+  });
 
   useEffect(() => {
     carregarDados();
+
+    const interval = setInterval(() => {
+      carregarDados();
+    }, 10000);
+
+    return () =>
+      clearInterval(interval);
   }, []);
 
   async function carregarDados() {
@@ -45,36 +65,60 @@ export default function Mapa() {
 
       const dados = alertasRes.data
         .map((alerta: any) => {
-          const regiao = regioesRes.data.find(
-            (r: any) =>
-              r.id === alerta.regiaoId
-          );
+          const regiao =
+            regioesRes.data.find(
+              (r: any) =>
+                r.id === alerta.regiaoId
+            );
 
           const historico =
             historicoRes.data.find(
               (h: any) =>
-                h.regiaoId === alerta.regiaoId
+                h.regiaoId ===
+                alerta.regiaoId
             );
 
           return {
             id: alerta.id,
-            dsNivel: alerta.dsNivel,
-            regiaoNome: alerta.regiaoNome,
-            dataEmissao: alerta.dataEmissao,
-            latitude: regiao?.reLatitude,
-            longitude: regiao?.reLongitude,
-            score: historico?.score ?? 0,
+            dsNivel:
+              alerta.dsNivel,
+            regiaoNome:
+              alerta.regiaoNome,
+            dataEmissao:
+              alerta.dataEmissao,
+            latitude:
+              regiao?.reLatitude,
+            longitude:
+              regiao?.reLongitude,
+            score:
+              historico?.score ??
+              0,
           };
         })
         .filter(
           (item: AlertaMapa) =>
-            item.latitude !== undefined &&
-            item.longitude !== undefined
+            item.latitude !==
+              undefined &&
+            item.longitude !==
+              undefined
         );
 
       setAlertas(dados);
-    } catch (error: any) {
-      console.log("ERRO MAPA:");
+
+      if (dados.length > 0) {
+        const ultimo =
+          dados[dados.length - 1];
+
+        setRegion({
+          latitude:
+            ultimo.latitude,
+          longitude:
+            ultimo.longitude,
+          latitudeDelta: 1.5,
+          longitudeDelta: 1.5,
+        });
+      }
+    } catch (error) {
       console.log(error);
 
       Alert.alert(
@@ -86,8 +130,12 @@ export default function Mapa() {
     }
   }
 
-  function corMarker(nivel: string) {
-    switch (nivel?.toUpperCase()) {
+  function corMarker(
+    nivel: string
+  ) {
+    switch (
+      nivel?.toUpperCase()
+    ) {
       case "ALTO":
         return "red";
 
@@ -114,35 +162,42 @@ export default function Mapa() {
     <View style={styles.container}>
       <MapView
         style={styles.map}
-        initialRegion={{
-          latitude: -22.9,
-          longitude: -47.06,
-          latitudeDelta: 5,
-          longitudeDelta: 5,
-        }}
+        region={region}
       >
-        {alertas.map((alerta) => (
-          <Marker
-            key={alerta.id}
-            coordinate={{
-              latitude: alerta.latitude,
-              longitude: alerta.longitude,
-            }}
-            title={alerta.regiaoNome}
-            description={`Nível: ${alerta.dsNivel}`}
-            pinColor={corMarker(
-              alerta.dsNivel
-            )}
-            onPress={() =>
-              abrirDetalhes(alerta)
-            }
-          />
-        ))}
+        {alertas.map(
+          (alerta) => (
+            <Marker
+              key={alerta.id}
+              coordinate={{
+                latitude:
+                  alerta.latitude,
+                longitude:
+                  alerta.longitude,
+              }}
+              title={
+                alerta.regiaoNome
+              }
+              description={`Nível: ${alerta.dsNivel}`}
+              pinColor={corMarker(
+                alerta.dsNivel
+              )}
+              onPress={() =>
+                abrirDetalhes(
+                  alerta
+                )
+              }
+            />
+          )
+        )}
       </MapView>
 
       <View style={styles.infoCard}>
-        <Text style={styles.infoTitle}>
-          Alertas Ativos
+        <Text
+          style={
+            styles.infoTitle
+          }
+        >
+          🚨 Alertas Ativos
         </Text>
 
         {loading ? (
@@ -151,42 +206,127 @@ export default function Mapa() {
             color="#D32F2F"
           />
         ) : (
-          <Text style={styles.infoValue}>
+          <Text
+            style={
+              styles.infoValue
+            }
+          >
             {alertas.length}
           </Text>
         )}
       </View>
 
-      <TouchableOpacity
-        style={styles.refreshButton}
-        onPress={carregarDados}
-      >
-        <Text style={styles.buttonText}>
-          Atualizar
-        </Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity
-        style={styles.regionButton}
-        onPress={() =>
-          router.push("/regioes")
+      <View
+        style={
+          styles.menuContainer
         }
       >
-        <Text style={styles.buttonText}>
-          Regiões
-        </Text>
-      </TouchableOpacity>
+        <TouchableOpacity
+          style={
+            styles.menuCard
+          }
+          onPress={() =>
+            router.push(
+              "/perfil"
+            )
+          }
+        >
+          <Text
+            style={
+              styles.menuIcon
+            }
+          >
+            👤
+          </Text>
 
-      <TouchableOpacity
-        style={styles.profileButton}
-        onPress={() =>
-          router.push("/perfil")
-        }
-      >
-        <Text style={styles.buttonText}>
-          Perfil
-        </Text>
-      </TouchableOpacity>
+          <Text
+            style={
+              styles.menuText
+            }
+          >
+            Perfil
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={
+            styles.menuCard
+          }
+          onPress={() =>
+            router.push(
+              "/regioes"
+            )
+          }
+        >
+          <Text
+            style={
+              styles.menuIcon
+            }
+          >
+            🌎
+          </Text>
+
+          <Text
+            style={
+              styles.menuText
+            }
+          >
+            Regiões
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={
+            styles.menuCard
+          }
+          onPress={() =>
+            router.push(
+              "/focos"
+            )
+          }
+        >
+          <Text
+            style={
+              styles.menuIcon
+            }
+          >
+            🔥
+          </Text>
+
+          <Text
+            style={
+              styles.menuText
+            }
+          >
+            Focos
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={
+            styles.menuCard
+          }
+          onPress={
+            carregarDados
+          }
+        >
+          <Text
+            style={
+              styles.menuIcon
+            }
+          >
+            🔄
+          </Text>
+
+          <Text
+            style={
+              styles.menuText
+            }
+          >
+            Atualizar
+          </Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }

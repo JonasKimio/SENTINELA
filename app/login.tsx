@@ -5,8 +5,6 @@ import {
   TextInput,
   TouchableOpacity,
   Alert,
-  ImageBackground,
-  Image,
   ActivityIndicator,
 } from "react-native";
 
@@ -14,6 +12,8 @@ import { router } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { authApi } from "../src/services/authApi";
+import { registerForPushNotifications } from "../src/services/notifications";
+
 import { loginStyles as styles } from "../src/styles/login.styles";
 
 export default function Login() {
@@ -50,13 +50,16 @@ export default function Login() {
     try {
       setLoading(true);
 
+      const fcmToken =
+        await registerForPushNotifications();
+
       const payload = {
         email: email.trim(),
         senha,
-        fcmToken: "",
+        fcmToken: fcmToken || "",
       };
 
-      console.log("=== LOGIN ===");
+      console.log("PAYLOAD LOGIN");
       console.log(payload);
 
       const response =
@@ -65,11 +68,27 @@ export default function Login() {
           payload
         );
 
-      console.log(response.data);
+      console.log(
+        "LOGIN RESPONSE:"
+      );
+
+      console.log(
+        JSON.stringify(
+          response.data,
+          null,
+          2
+        )
+      );
 
       const token =
         response.data?.idToken ||
         response.data?.token;
+
+      console.log(
+        "TOKEN RECEBIDO:"
+      );
+
+      console.log(token);
 
       if (!token) {
         Alert.alert(
@@ -95,6 +114,17 @@ export default function Login() {
         ],
       ]);
 
+      const tokenSalvo =
+        await AsyncStorage.getItem(
+          "token"
+        );
+
+      console.log(
+        "TOKEN SALVO:"
+      );
+
+      console.log(tokenSalvo);
+
       Alert.alert(
         "Sucesso",
         "Login realizado com sucesso!"
@@ -102,95 +132,82 @@ export default function Login() {
 
       router.replace("/mapa");
     } catch (error: any) {
-      console.log("ERRO LOGIN");
+      console.log(
+        "ERRO LOGIN"
+      );
+
       console.log(error);
 
-      if (error?.response) {
-        Alert.alert(
-          `Erro ${error.response.status}`,
-          error.response?.data?.detail ||
-            "Falha ao realizar login."
-        );
-      } else {
-        Alert.alert(
-          "Erro de conexão",
-          "Não foi possível conectar com a API."
-        );
-      }
+      console.log(
+        error?.response?.data
+      );
+
+      Alert.alert(
+        "Erro",
+        error?.response?.data?.detail ||
+          error?.response?.data?.message ||
+          "Falha ao realizar login."
+      );
     } finally {
       setLoading(false);
     }
   }
 
   return (
-    <ImageBackground
-      source={require("../src/assets/logo.jpg")}
-      style={styles.background}
-      resizeMode="cover"
-    >
-      <View style={styles.overlay}>
-        <View style={styles.card}>
+    <View style={styles.container}>
+      <View style={styles.card}>
+        <Text style={styles.title}>
+          S.E.N.T.I.N.E.L.A
+        </Text>
 
-          <Text style={styles.title}>
-            S.E.N.T.I.N.E.L.A
-          </Text>
+        <Text style={styles.subtitle}>
+          Sistema Inteligente de
+          Monitoramento Ambiental
+        </Text>
 
-          <Text style={styles.subtitle}>
-            Sistema Inteligente de
-            Monitoramento Ambiental
-          </Text>
+        <TextInput
+          placeholder="E-mail"
+          style={styles.input}
+          value={email}
+          onChangeText={setEmail}
+          autoCapitalize="none"
+          keyboardType="email-address"
+        />
 
-          <TextInput
-            placeholder="E-mail"
-            placeholderTextColor="#999"
-            style={styles.input}
-            value={email}
-            onChangeText={setEmail}
-            autoCapitalize="none"
-            keyboardType="email-address"
-          />
+        <TextInput
+          placeholder="Senha"
+          secureTextEntry
+          style={styles.input}
+          value={senha}
+          onChangeText={setSenha}
+        />
 
-          <TextInput
-            placeholder="Senha"
-            placeholderTextColor="#999"
-            style={styles.input}
-            secureTextEntry
-            value={senha}
-            onChangeText={setSenha}
-          />
-
-          <TouchableOpacity
-            style={[
-              styles.button,
-              loading && {
-                opacity: 0.7,
-              },
-            ]}
-            disabled={loading}
-            onPress={realizarLogin}
-          >
-            {loading ? (
-              <ActivityIndicator
-                color="#FFF"
-              />
-            ) : (
-              <Text style={styles.buttonText}>
-                ENTRAR
-              </Text>
-            )}
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            onPress={() =>
-              router.push("/cadastro")
-            }
-          >
-            <Text style={styles.link}>
-              Criar conta
+        <TouchableOpacity
+          style={styles.button}
+          disabled={loading}
+          onPress={realizarLogin}
+        >
+          {loading ? (
+            <ActivityIndicator
+              color="#FFF"
+            />
+          ) : (
+            <Text style={styles.buttonText}>
+              ENTRAR
             </Text>
-          </TouchableOpacity>
-        </View>
+          )}
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          onPress={() =>
+            router.push("/cadastro")
+          }
+        >
+          <Text style={styles.link}>
+            Criar conta
+          </Text>
+        </TouchableOpacity>
       </View>
-    </ImageBackground>
+    </View>
   );
 }

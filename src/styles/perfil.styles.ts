@@ -1,32 +1,27 @@
 import { StyleSheet } from "react-native";
 
 export default StyleSheet.create({
-  background: {
+  container: {
     flex: 1,
-  },
-
-  overlay: {
-    flex: 1,
-    backgroundColor: "rgba(0,0,0,0.65)",
+    backgroundColor: "#555",
     justifyContent: "center",
     alignItems: "center",
     padding: 20,
   },
 
-  card: {
-    width: "100%",
-    maxWidth: 400,
-    backgroundColor: "rgba(20,20,20,0.95)",
-    borderRadius: 25,
-    padding: 25,
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
     alignItems: "center",
+    backgroundColor: "#111",
   },
 
-  logo: {
-    width: 100,
-    height: 100,
-    resizeMode: "contain",
-    marginBottom: 10,
+  card: {
+    width: "100%",
+    backgroundColor: "#0B0B0F",
+    borderRadius: 30,
+    padding: 25,
+    alignItems: "center",
   },
 
   avatar: {
@@ -36,80 +31,83 @@ export default StyleSheet.create({
     backgroundColor: "#D32F2F",
     justifyContent: "center",
     alignItems: "center",
-    marginBottom: 15,
+    marginBottom: 20,
   },
 
   avatarText: {
     color: "#FFF",
-    fontSize: 38,
+    fontSize: 40,
     fontWeight: "bold",
   },
 
   title: {
-    fontSize: 28,
-    fontWeight: "bold",
     color: "#FFF",
+    fontSize: 20,
+    fontWeight: "bold",
     marginBottom: 15,
   },
 
   nome: {
-    fontSize: 22,
-    fontWeight: "bold",
     color: "#FFF",
+    fontSize: 30,
+    fontWeight: "bold",
   },
 
   email: {
-    color: "#BBB",
-    marginTop: 5,
+    color: "#CFCFCF",
+    marginTop: 8,
+    fontSize: 16,
   },
 
   uid: {
     color: "#888",
-    fontSize: 12,
     marginTop: 8,
-    marginBottom: 15,
+    fontSize: 12,
+    textAlign: "center",
+    marginBottom: 20,
   },
 
   infoCard: {
     width: "100%",
-    backgroundColor: "#262626",
-    padding: 15,
-    borderRadius: 12,
+    backgroundColor: "#222",
+    padding: 18,
+    borderRadius: 15,
     marginBottom: 20,
-    marginTop: 10,
   },
 
   infoTitle: {
     color: "#FFF",
     fontWeight: "bold",
-    marginBottom: 5,
+    fontSize: 16,
+    marginBottom: 8,
   },
 
   infoText: {
-    color: "#CCC",
-    lineHeight: 20,
+    color: "#DDD",
+    fontSize: 15,
+    lineHeight: 22,
   },
 
   button: {
     width: "100%",
-    backgroundColor: "#D32F2F",
-    padding: 15,
-    borderRadius: 12,
+    backgroundColor: "#E02929",
+    padding: 18,
+    borderRadius: 14,
     alignItems: "center",
     marginBottom: 12,
   },
 
   logoutButton: {
     width: "100%",
-    backgroundColor: "#444",
-    padding: 15,
-    borderRadius: 12,
+    backgroundColor: "#4A4A4A",
+    padding: 18,
+    borderRadius: 14,
     alignItems: "center",
   },
 
   buttonText: {
     color: "#FFF",
-    fontWeight: "bold",
     fontSize: 16,
+    fontWeight: "bold",
   },
 });

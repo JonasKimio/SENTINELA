@@ -5,7 +5,7 @@ export default function Layout() {
     <Stack
       screenOptions={{
         headerStyle: {
-          backgroundColor: "#D32F2F",
+          backgroundColor: "#202020",
         },
         headerTintColor: "#fff",
         headerTitleAlign: "center",
@@ -47,9 +47,22 @@ export default function Layout() {
       />
 
       <Stack.Screen
+        name="sobre"
+        options={{ title: "Sobre", }}
+      />
+
+      <Stack.Screen
+        name="alerta/[id]"
+        options={{
+          title: "Detalhes do Alerta",
+        }}
+      />
+
+      <Stack.Screen
         name="nova-regiao"
         options={{ title: "Nova Região" }}
       />
     </Stack>
+    
   );
 }

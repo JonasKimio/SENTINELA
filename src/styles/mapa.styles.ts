@@ -14,75 +14,58 @@ export const mapaStyles = StyleSheet.create({
     position: "absolute",
     top: 50,
     alignSelf: "center",
-
     backgroundColor: "rgba(0,0,0,0.85)",
     padding: 15,
-
     borderRadius: 12,
-
     borderWidth: 1,
     borderColor: "#D32F2F",
-
-    minWidth: 140,
+    minWidth: 150,
     alignItems: "center",
   },
 
   infoTitle: {
     color: "#FFF",
     fontWeight: "bold",
-    fontSize: 14,
   },
 
   infoValue: {
     color: "#D32F2F",
-    fontSize: 28,
+    fontSize: 30,
     fontWeight: "bold",
   },
 
-  refreshButton: {
+  menuContainer: {
     position: "absolute",
-    bottom: 30,
-    left: 20,
+    bottom: 25,
+    left: 10,
+    right: 10,
 
-    backgroundColor: "#D32F2F",
-
-    paddingHorizontal: 20,
-    paddingVertical: 12,
-
-    borderRadius: 12,
+    flexDirection: "row",
+    justifyContent: "space-around",
   },
 
-  regionButton: {
-    position: "absolute",
-    bottom: 30,
-    alignSelf: "center",
+  menuCard: {
+    backgroundColor: "rgba(0,0,0,0.85)",
+    width: 80,
+    height: 80,
 
-    backgroundColor: "#1E1E1E",
+    borderRadius: 15,
 
-    paddingHorizontal: 20,
-    paddingVertical: 12,
-
-    borderRadius: 12,
+    justifyContent: "center",
+    alignItems: "center",
 
     borderWidth: 1,
     borderColor: "#D32F2F",
   },
 
-  profileButton: {
-    position: "absolute",
-    bottom: 30,
-    right: 20,
-
-    backgroundColor: "#D32F2F",
-
-    paddingHorizontal: 20,
-    paddingVertical: 12,
-
-    borderRadius: 12,
+  menuIcon: {
+    fontSize: 24,
   },
 
-  buttonText: {
+  menuText: {
     color: "#FFF",
+    marginTop: 5,
     fontWeight: "bold",
+    fontSize: 12,
   },
 });
